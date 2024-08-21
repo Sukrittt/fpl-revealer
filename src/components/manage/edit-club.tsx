@@ -15,21 +15,24 @@ import { api } from "~/trpc/react";
 import { Input } from "~/components/ui/input";
 import { uploadFiles } from "~/lib/uploadthing";
 import { Check } from "lucide-react";
+import { Club, Player } from "@prisma/client";
 
 type UploadType = "logo" | "jersey" | "goalkeeperJersey";
 
-export const CreateClub = () => {
+type ExtendedClub = Club & { players: Player[] };
+
+export const EditClub = ({ club }: { club: ExtendedClub }) => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
 
-  const [name, setName] = useState("");
-  const [shortName, setShortName] = useState("");
+  const [name, setName] = useState(club.name);
+  const [shortName, setShortName] = useState(club.shortName ?? "");
 
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [jerseyUrl, setJerseyUrl] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(club.logoUrl);
+  const [jerseyUrl, setJerseyUrl] = useState<string | null>(club.jerseyUrl);
   const [goalkeeperJerseyUrl, setGoalkeeperJerseyUrl] = useState<string | null>(
-    null,
+    club.goalkeeperJerseyUrl,
   );
 
   const [uploadingLogo, setUploadingLogo] = useState(false);
@@ -131,24 +134,24 @@ export const CreateClub = () => {
     setShortName("");
   };
 
-  const { mutate: createClub, isPending: isLoading } =
-    api.club.create.useMutation({
-      onSuccess: () => {
-        toast.success("Club created successfully.");
+  const { mutate: editClub, isPending: isLoading } = api.club.edit.useMutation({
+    onSuccess: () => {
+      toast.success("Club created successfully.");
 
-        router.refresh();
-        resetValues();
-        setOpen(false);
-      },
-    });
+      router.refresh();
+      resetValues();
+      setOpen(false);
+    },
+  });
 
-  const handleCreateClub = async () => {
+  const handleEditClub = async () => {
     if (!name || !logoUrl || !jerseyUrl || !goalkeeperJerseyUrl || !shortName) {
       toast.error("Please fill all fields.");
       return;
     }
 
-    createClub({
+    editClub({
+      clubId: club.id,
       name,
       logoUrl,
       jerseyUrl,
@@ -161,12 +164,12 @@ export const CreateClub = () => {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div className="cursor-pointer rounded-md border bg-neutral-100 px-4 py-1 text-sm">
-          Create Club
+          Edit Club
         </div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Club</DialogTitle>
+          <DialogTitle>Edit Club</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-y-2">
@@ -260,7 +263,7 @@ export const CreateClub = () => {
           />
 
           <button
-            onClick={handleCreateClub}
+            onClick={handleEditClub}
             className={cn(
               "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",
               {
@@ -272,7 +275,7 @@ export const CreateClub = () => {
               },
             )}
           >
-            Create
+            Save
           </button>
         </div>
       </DialogContent>

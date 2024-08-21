@@ -5,6 +5,7 @@ import { db } from "~/server/db";
 import { AddPlayer } from "./add-player";
 import { getServerAuthSession } from "~/server/auth";
 import { getCategorizedPlayers } from "~/lib/utils";
+import { EditClub } from "./edit-club";
 
 export const ClubServer = async ({ clubId }: { clubId: string }) => {
   const session = await getServerAuthSession();
@@ -42,7 +43,10 @@ export const ClubServer = async ({ clubId }: { clubId: string }) => {
           <h3 className="text-xl font-bold">{club.name}</h3>
         </div>
 
-        <AddPlayer clubId={clubId} />
+        <div className="flex items-center gap-x-2">
+          <EditClub club={club} />
+          <AddPlayer clubId={clubId} />
+        </div>
       </div>
 
       <div className="grid grid-cols-4 gap-8">

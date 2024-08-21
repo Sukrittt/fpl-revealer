@@ -42,6 +42,61 @@ export const clubRouter = createTRPCRouter({
         },
       });
     }),
+  edit: protectedProcedure
+    .input(
+      z.object({
+        clubId: z.string(),
+        name: z.string(),
+        logoUrl: z.string(),
+        jerseyUrl: z.string(),
+        goalkeeperJerseyUrl: z.string(),
+        shortName: z.string().min(3).max(3),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { clubId, ...payload } = input;
+
+      const existingClub = await ctx.db.club.findFirst({
+        where: {
+          id: clubId,
+        },
+        select: { id: true },
+      });
+
+      if (!existingClub) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "This club does not exist.",
+        });
+      }
+
+      const existingClubWithSameName = await ctx.db.club.findFirst({
+        where: {
+          id: { not: clubId },
+          name: {
+            equals: input.name,
+            mode: "insensitive",
+          },
+        },
+        select: { id: true },
+      });
+
+      if (existingClubWithSameName) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This club is already added.",
+        });
+      }
+
+      await ctx.db.club.update({
+        where: {
+          id: clubId,
+        },
+        data: {
+          ...payload,
+        },
+      });
+    }),
   addPlayer: protectedProcedure
     .input(
       z.object({
