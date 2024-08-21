@@ -3,6 +3,7 @@ import Image from "next/image";
 
 import { db } from "~/server/db";
 import { SignIn } from "./sign-in";
+import { SignOut } from "./sign-out";
 import { getServerAuthSession } from "~/server/auth";
 
 export const Navbar = async () => {
@@ -27,7 +28,7 @@ export const Navbar = async () => {
         </div>
       </div>
 
-      {session ? <p>{session.user.name}</p> : <SignIn />}
+      {session ? <SignOut /> : <SignIn />}
     </div>
   );
 };
