@@ -10,7 +10,7 @@ export const fplRouter = createTRPCRouter({
   createDraft: protectedProcedure
     .input(
       z.object({
-        name: z.string(),
+        name: z.string().max(300),
         status: DraftStatusEnum,
       }),
     )
