@@ -1,7 +1,7 @@
 import "~/styles/globals.css";
 
-import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
+import localFont from "next/font/local";
 
 import { TRPCReactProvider } from "~/trpc/react";
 
@@ -11,11 +11,16 @@ export const metadata: Metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
+const font = localFont({
+  src: "../../public/fonts/radikal-regular.otf",
+  variable: "--font-radikal-regular",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${GeistSans.variable}`}>
+    <html lang="en" className={`${font.variable} font-sans`}>
       <body>
         <TRPCReactProvider>{children}</TRPCReactProvider>
       </body>
