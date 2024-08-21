@@ -24,6 +24,7 @@ export const CreateClub = () => {
   const [open, setOpen] = useState(false);
 
   const [name, setName] = useState("");
+  const [shortName, setShortName] = useState("");
 
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [jerseyUrl, setJerseyUrl] = useState<string | null>(null);
@@ -124,6 +125,8 @@ export const CreateClub = () => {
     setName("");
     setLogoUrl(null);
     setJerseyUrl(null);
+    setGoalkeeperJerseyUrl(null);
+    setShortName("");
   };
 
   const { mutate: createClub, isPending: isLoading } =
@@ -138,7 +141,7 @@ export const CreateClub = () => {
     });
 
   const handleCreateClub = async () => {
-    if (!name || !logoUrl || !jerseyUrl || !goalkeeperJerseyUrl) {
+    if (!name || !logoUrl || !jerseyUrl || !goalkeeperJerseyUrl || !shortName) {
       toast.error("Please fill all fields.");
       return;
     }
@@ -148,6 +151,7 @@ export const CreateClub = () => {
       logoUrl,
       jerseyUrl,
       goalkeeperJerseyUrl,
+      shortName,
     });
   };
 
@@ -170,6 +174,14 @@ export const CreateClub = () => {
             onChange={(e) => setName(e.target.value)}
             className="bg-white px-2 py-1"
             placeholder="Type club name"
+          />
+
+          <Input
+            disabled={isLoading}
+            value={shortName}
+            onChange={(e) => setShortName(e.target.value)}
+            className="bg-white px-2 py-1"
+            placeholder="Type club short name (3 characters), e.g. MUN"
           />
 
           <div className="grid grid-cols-3 gap-x-2">
