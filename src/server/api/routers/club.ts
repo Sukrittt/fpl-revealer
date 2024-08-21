@@ -1,8 +1,8 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 import { Position } from "@prisma/client";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
-import { TRPCError } from "@trpc/server";
 
 const PositionEnum = z.nativeEnum(Position);
 
