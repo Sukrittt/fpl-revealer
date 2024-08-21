@@ -14,6 +14,9 @@ import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { Input } from "~/components/ui/input";
 import { uploadFiles } from "~/lib/uploadthing";
+import { Check } from "lucide-react";
+
+type UploadType = "logo" | "jersey" | "goalkeeperJersey";
 
 export const CreateClub = () => {
   const router = useRouter();
@@ -21,34 +24,47 @@ export const CreateClub = () => {
   const [open, setOpen] = useState(false);
 
   const [name, setName] = useState("");
+
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [jerseyUrl, setJerseyUrl] = useState<string | null>(null);
+  const [goalkeeperJerseyUrl, setGoalkeeperJerseyUrl] = useState<string | null>(
+    null,
+  );
 
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingJersey, setUploadingJersey] = useState(false);
+  const [uploadingGoalkeeperJersey, setUploadingGoalkeeperJersey] =
+    useState(false);
 
   const logoInputRef = useRef<HTMLInputElement | null>(null);
   const jerseyInputRef = useRef<HTMLInputElement | null>(null);
+  const goalkeeperJerseyInputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleFileClick = (type: "logo" | "jersey") => {
+  const handleFileClick = (type: UploadType) => {
     if (type === "logo" && uploadingLogo) return;
 
     if (type === "jersey" && uploadingJersey) return;
+
+    if (type === "goalkeeperJersey" && uploadingGoalkeeperJersey) return;
 
     if (type === "logo") {
       if (logoInputRef.current) {
         logoInputRef.current.click();
       }
-    } else {
+    } else if (type === "jersey") {
       if (jerseyInputRef.current) {
         jerseyInputRef.current.click();
+      }
+    } else {
+      if (goalkeeperJerseyInputRef.current) {
+        goalkeeperJerseyInputRef.current.click();
       }
     }
   };
 
   const handleFileChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    type: "logo" | "jersey",
+    type: UploadType,
   ) => {
     const files = event.target.files;
 
@@ -61,8 +77,10 @@ export const CreateClub = () => {
 
       if (type === "logo") {
         setUploadingLogo(true);
-      } else {
+      } else if (type === "jersey") {
         setUploadingJersey(true);
+      } else {
+        setUploadingGoalkeeperJersey(true);
       }
 
       const fileObj = await uploadByFile(file);
@@ -71,9 +89,12 @@ export const CreateClub = () => {
 
       if (type === "logo") {
         setLogoUrl(fileObj.url);
-      } else {
+      } else if (type === "jersey") {
         setJerseyUrl(fileObj.url);
+      } else {
+        setGoalkeeperJerseyUrl(fileObj.url);
       }
+
       toast.success("Files uploaded successfully.");
     } catch (e) {
       console.error(e);
@@ -117,7 +138,7 @@ export const CreateClub = () => {
     });
 
   const handleCreateClub = async () => {
-    if (!name || !logoUrl || !jerseyUrl) {
+    if (!name || !logoUrl || !jerseyUrl || !goalkeeperJerseyUrl) {
       toast.error("Please fill all fields.");
       return;
     }
@@ -126,6 +147,7 @@ export const CreateClub = () => {
       name,
       logoUrl,
       jerseyUrl,
+      goalkeeperJerseyUrl,
     });
   };
 
@@ -150,7 +172,7 @@ export const CreateClub = () => {
             placeholder="Type club name"
           />
 
-          <div className="grid grid-cols-2 gap-x-2">
+          <div className="grid grid-cols-3 gap-x-2">
             <div
               onClick={() => handleFileClick("logo")}
               className={cn(
@@ -160,9 +182,8 @@ export const CreateClub = () => {
                 },
               )}
             >
-              <p className="text-sm">
-                {logoUrl ? "Logo uploaded" : "Upload Logo"}
-              </p>
+              <p className="text-sm">Logo</p>
+              {logoUrl && <Check className="h-3 w-3" />}
             </div>
 
             <div
@@ -174,9 +195,22 @@ export const CreateClub = () => {
                 },
               )}
             >
-              <p className="text-sm">
-                {jerseyUrl ? "Jersey uploaded" : "Upload Jersey"}
-              </p>
+              <p className="text-sm">Jersey</p>
+              {jerseyUrl && <Check className="h-3 w-3" />}
+            </div>
+
+            <div
+              onClick={() => handleFileClick("goalkeeperJersey")}
+              className={cn(
+                "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-100 px-2 py-1 transition hover:bg-neutral-100/60",
+                {
+                  "cursor-default opacity-60":
+                    uploadingGoalkeeperJersey || isLoading,
+                },
+              )}
+            >
+              <p className="text-sm">Gk Jersey</p>
+              {goalkeeperJerseyUrl && <Check className="h-3 w-3" />}
             </div>
           </div>
 
@@ -194,6 +228,15 @@ export const CreateClub = () => {
             ref={jerseyInputRef}
             className="hidden"
             onChange={(e) => handleFileChange(e, "jersey")}
+            accept="image/*"
+            type="file"
+          />
+
+          <input
+            disabled={uploadingGoalkeeperJersey || isLoading}
+            ref={goalkeeperJerseyInputRef}
+            className="hidden"
+            onChange={(e) => handleFileChange(e, "goalkeeperJersey")}
             accept="image/*"
             type="file"
           />

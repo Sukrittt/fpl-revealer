@@ -13,6 +13,7 @@ export const clubRouter = createTRPCRouter({
         name: z.string(),
         logoUrl: z.string(),
         jerseyUrl: z.string(),
+        goalkeeperJerseyUrl: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {
