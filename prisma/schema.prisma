@@ -79,8 +79,10 @@ model VerificationToken {
 model Club {
     id String @id @default(cuid())
 
-    name    String
-    logoUrl String
+    name String
+
+    logoUrl   String
+    jerseyUrl String
 
     User   User?   @relation(fields: [userId], references: [id])
     userId String?
