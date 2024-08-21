@@ -13,32 +13,27 @@ import {
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 
-interface DeletePlayerProps {
-  playerId: string;
+interface DeleteClubProps {
   clubId: string;
 }
 
-export const DeletePlayer: React.FC<DeletePlayerProps> = ({
-  playerId,
-  clubId,
-}) => {
+export const DeleteClub: React.FC<DeleteClubProps> = ({ clubId }) => {
   const [open, setOpen] = useState(false);
 
   const router = useRouter();
 
-  const { mutate: deletePlayer, isPending: isLoading } =
-    api.club.deletePlayer.useMutation({
+  const { mutate: deleteClub, isPending: isLoading } =
+    api.club.delete.useMutation({
       onSuccess: () => {
         toast.success("Changes saved successfully.");
 
-        router.push("/manage");
+        router.refresh();
         setOpen(false);
       },
     });
 
-  const handleDeletePlayer = async () => {
-    deletePlayer({
-      playerId,
+  const handleDeleteClub = async () => {
+    deleteClub({
       clubId,
     });
   };
@@ -54,8 +49,8 @@ export const DeletePlayer: React.FC<DeletePlayerProps> = ({
         <DialogHeader>
           <DialogTitle>Are you absolutely sure?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete this
-            player and remove this data from our servers.
+            This action cannot be undone. This will permanently delete this club
+            and remove this data from our servers.
           </DialogDescription>
         </DialogHeader>
 
@@ -67,7 +62,7 @@ export const DeletePlayer: React.FC<DeletePlayerProps> = ({
             Cancel
           </button>
           <button
-            onClick={handleDeletePlayer}
+            onClick={handleDeleteClub}
             disabled={isLoading}
             className={cn(
               "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-red-200 px-2 py-1 text-sm transition hover:bg-red-200/60",

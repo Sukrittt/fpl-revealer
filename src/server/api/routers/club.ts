@@ -97,6 +97,36 @@ export const clubRouter = createTRPCRouter({
         },
       });
     }),
+  delete: protectedProcedure
+    .input(
+      z.object({
+        clubId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { clubId } = input;
+
+      const existingClub = await ctx.db.club.findFirst({
+        where: {
+          id: clubId,
+        },
+        select: { id: true },
+      });
+
+      if (!existingClub) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "This club does not exist.",
+        });
+      }
+
+      await ctx.db.club.delete({
+        where: {
+          id: clubId,
+        },
+      });
+    }),
+
   addPlayer: protectedProcedure
     .input(
       z.object({

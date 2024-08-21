@@ -1,7 +1,9 @@
 "use client";
 import { toast } from "sonner";
+import { Check } from "lucide-react";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Club, Player } from "@prisma/client";
 
 import {
   Dialog,
@@ -12,10 +14,9 @@ import {
 } from "~/components/ui/dialog";
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
+import { DeleteClub } from "./delete-club";
 import { Input } from "~/components/ui/input";
 import { uploadFiles } from "~/lib/uploadthing";
-import { Check } from "lucide-react";
-import { Club, Player } from "@prisma/client";
 
 type UploadType = "logo" | "jersey" | "goalkeeperJersey";
 
@@ -253,27 +254,31 @@ export const EditClub = ({ club }: { club: ExtendedClub }) => {
             type="file"
           />
 
-          <button
-            disabled={
-              uploadingLogo ||
-              uploadingJersey ||
-              uploadingGoalkeeperJersey ||
-              isLoading
-            }
-            onClick={handleEditClub}
-            className={cn(
-              "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",
-              {
-                "cursor-default opacity-60":
-                  uploadingLogo ||
-                  uploadingJersey ||
-                  uploadingGoalkeeperJersey ||
-                  isLoading,
-              },
-            )}
-          >
-            Save
-          </button>
+          <div className="grid grid-cols-2 gap-x-2">
+            <DeleteClub clubId={club.id} />
+
+            <button
+              disabled={
+                uploadingLogo ||
+                uploadingJersey ||
+                uploadingGoalkeeperJersey ||
+                isLoading
+              }
+              onClick={handleEditClub}
+              className={cn(
+                "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",
+                {
+                  "cursor-default opacity-60":
+                    uploadingLogo ||
+                    uploadingJersey ||
+                    uploadingGoalkeeperJersey ||
+                    isLoading,
+                },
+              )}
+            >
+              Save
+            </button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
