@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { signOut } from "next-auth/react";
 
+import { cn } from "~/lib/utils";
+
 export const SignOut = () => {
   const [loading, setLoading] = useState(false);
 
@@ -15,6 +17,13 @@ export const SignOut = () => {
   };
 
   return (
-    <p onClick={handleLogout}>{loading ? "Signing Out..." : "Sign Out"}</p>
+    <p
+      onClick={handleLogout}
+      className={cn("cursor-pointer", {
+        "cursor-default opacity-60": loading,
+      })}
+    >
+      {loading ? "Signing Out..." : "Sign Out"}
+    </p>
   );
 };

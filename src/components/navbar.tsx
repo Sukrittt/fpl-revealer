@@ -17,7 +17,7 @@ export const Navbar = async () => {
   });
 
   return (
-    <div className="sticky top-20 z-40 mt-10 flex h-16 items-center justify-between bg-[#37003c] px-6 text-white">
+    <div className="sticky top-0 z-40 mt-10 flex h-16 items-center justify-between bg-[#37003c] px-6 text-white">
       <div className="flex items-center gap-x-16">
         <Image src="/images/logo.png" alt="logo" width={90} height={90} />
 
