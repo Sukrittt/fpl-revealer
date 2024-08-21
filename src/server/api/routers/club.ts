@@ -75,4 +75,14 @@ export const clubRouter = createTRPCRouter({
         },
       });
     }),
+
+  getPlayers: protectedProcedure.query(async ({ ctx }) => {
+    const players = await ctx.db.player.findMany({
+      include: {
+        club: true,
+      },
+    });
+
+    return players;
+  }),
 });

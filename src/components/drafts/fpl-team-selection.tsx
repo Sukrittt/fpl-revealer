@@ -3,6 +3,7 @@
 import { cn } from "~/lib/utils";
 import { FplField } from "./fpl-field";
 import type { ExtendedFplTeam } from "~/types";
+import { FplPlayerList } from "./fpl-player-list";
 
 interface FplTeamSelectionProps {
   fplTeam: ExtendedFplTeam;
@@ -53,7 +54,7 @@ export const FplTeamSelection: React.FC<FplTeamSelectionProps> = ({
         <FplField fplTeam={fplTeam} />
       </div>
       <div className="col-span-2">
-        <p>Player Selection</p>
+        <FplPlayerList fplTeam={fplTeam} />
       </div>
     </div>
   );

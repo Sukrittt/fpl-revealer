@@ -1,9 +1,14 @@
 import Image from "next/image";
-import { UserPlus } from "lucide-react";
+import { UserPlus, X } from "lucide-react";
 import { type Position } from "@prisma/client";
 
 import { cn, getCategorizedFplPlayers } from "~/lib/utils";
-import type { ExtendedFplTeam, ExtendedPlayer } from "~/types";
+import type {
+  ExtendedFplPlayer,
+  ExtendedFplTeam,
+  ExtendedPlayer,
+} from "~/types";
+import { RemovePlayerFromFpl } from "./remove-player";
 
 interface FplFieldProps {
   fplTeam: ExtendedFplTeam;
@@ -95,18 +100,40 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
   );
 };
 
-const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedPlayer }) => {
+const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
   return (
-    <div className="flex flex-col overflow-hidden rounded-md bg-[#0ea15e] ring ring-transparent ring-offset-2 hover:ring-white">
-      <Image
-        src={fplPlayer.player.club.jerseyUrl}
-        alt={`${fplPlayer.player.name} jersey`}
-        width={80}
-        height={80}
-      />
+    <div className="ring-offset-background relative flex h-32 w-24 flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none">
+      <RemovePlayerFromFpl
+        fplPlayerId={fplPlayer.id}
+        fplTeamId={fplPlayer.fplTeamId}
+        playerName={fplPlayer.player.name}
+      >
+        <div className="absolute left-1 top-1">
+          <div className="bg-foreground flex cursor-pointer items-center justify-center rounded-full p-0.5">
+            <X className="m-auto h-3 w-3 text-white" />
+          </div>
+        </div>
+      </RemovePlayerFromFpl>
 
-      <div className="bg-white px-4 py-2">
-        <p className="text-center text-sm">{fplPlayer.player.name}</p>
+      <p className="text-center text-white">
+        £{fplPlayer.player.price.toFixed(1)}m
+      </p>
+
+      <div className="flex h-full w-full items-center justify-center">
+        <div className="relative h-full w-3/4 p-4">
+          <Image
+            src={fplPlayer.player.club.jerseyUrl}
+            alt={`${fplPlayer.player.name} jersey`}
+            fill
+          />
+        </div>
+      </div>
+
+      <div className="bg-white px-4 py-1">
+        {/* TODO: Replace with display name if available */}
+        <p className="text-center text-sm">
+          {fplPlayer.player.name.split(" ")[0]}
+        </p>
       </div>
     </div>
   );
@@ -119,8 +146,8 @@ interface EmptyPlayerCardProps {
 
 const EmptyPlayerCard = ({ index, position }: EmptyPlayerCardProps) => {
   return (
-    <div className="ring-offset-background flex cursor-pointer flex-col overflow-hidden rounded-md bg-[#0ea15e] transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none">
-      <div className="flex h-28 w-24 flex-col items-center justify-center gap-y-1 px-4 text-white">
+    <div className="ring-offset-background flex h-32 w-24 cursor-pointer flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none">
+      <div className="flex h-full w-full flex-col items-center justify-center gap-y-1 px-4 text-white">
         <UserPlus className="h-4 w-4" />
         <p className="text-sm">
           {position.charAt(0) + position.slice(1).toLowerCase()}
