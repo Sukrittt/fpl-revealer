@@ -21,6 +21,7 @@ const config = {
     "@typescript-eslint/no-unsafe-member-access": "off",
     "@typescript-eslint/no-empty-object-type": "off",
     "@typescript-eslint/no-require-imports": "off",
+    "@typescript-eslint/no-redundant-type-constituents": "off",
     "@typescript-eslint/consistent-type-imports": [
       "warn",
       {

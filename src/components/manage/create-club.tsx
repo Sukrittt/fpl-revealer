@@ -201,7 +201,7 @@ export const CreateClub = () => {
           <div
             onClick={handleCreateClub}
             className={cn(
-              "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 transition hover:bg-neutral-200/60",
+              "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",
               {
                 "cursor-default opacity-60":
                   uploadingLogo || uploadingJersey || isLoading,

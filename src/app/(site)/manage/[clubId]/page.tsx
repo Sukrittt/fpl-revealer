@@ -2,10 +2,18 @@ import { Suspense } from "react";
 
 import { ClubServer } from "~/components/manage/club-server";
 
-export default function page() {
+interface PageProps {
+  params: {
+    clubId: string;
+  };
+}
+
+export default function page({ params }: PageProps) {
+  const { clubId } = params;
+
   return (
     <Suspense fallback={<p>Loading...</p>}>
-      <ClubServer />
+      <ClubServer clubId={clubId} />
     </Suspense>
   );
 }

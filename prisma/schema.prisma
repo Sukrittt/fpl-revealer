@@ -53,11 +53,12 @@ model User {
     favouriteClubId String?
     favouriteClub   Club?   @relation("favouriteClub", fields: [favouriteClubId], references: [id])
 
-    accounts   Account[]
-    sessions   Session[]
-    clubs      Club[]
-    fplTeams   FplTeam[]
-    fplPlayers FplPlayer[]
+    accounts     Account[]
+    sessions     Session[]
+    clubsCreated Club[]
+    playersAdded Player[]
+    fplTeams     FplTeam[]
+    fplPlayers   FplPlayer[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -84,8 +85,8 @@ model Club {
     logoUrl   String
     jerseyUrl String
 
-    User   User?   @relation(fields: [userId], references: [id])
-    userId String?
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
 
     players    Player[]
     favourites User[]   @relation("favouriteClub")
@@ -100,6 +101,9 @@ model Player {
     name     String
     position Position
     price    Float
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
 
     clubId String
     club   Club   @relation(fields: [clubId], references: [id])
