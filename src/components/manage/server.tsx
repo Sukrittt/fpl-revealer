@@ -1,4 +1,6 @@
+import Link from "next/link";
 import Image from "next/image";
+import { MoveRight } from "lucide-react";
 import { redirect } from "next/navigation";
 
 import { db } from "~/server/db";
@@ -27,22 +29,29 @@ export const ManageServer = async () => {
         <p className="text-6xl font-extrabold">Clubs</p>
       </div>
 
-      <div className="flex items-center justify-end px-40">
+      <div className="flex items-center justify-end px-20">
         <CreateClub />
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-4 px-40 py-20">
+      <div className="grid grid-cols-5 items-center gap-x-4 px-20 py-10">
         {clubs.map((club) => (
-          <div key={club.id} className="flex flex-col gap-y-2">
+          <Link
+            href={`/manage/${club.id}`}
+            key={club.id}
+            className="flex flex-col gap-y-4 rounded-lg border p-2 hover:bg-neutral-100"
+          >
             <Image
               src={club.logoUrl}
               alt={`${club.name} logo`}
-              width={100}
-              height={100}
+              width={80}
+              height={80}
             />
 
-            <p>{club.name}</p>
-          </div>
+            <div className="flex items-center justify-between pr-4">
+              <p className="text-lg font-bold text-[#37003c]">{club.name}</p>
+              <MoveRight className="h-3 w-3" />
+            </div>
+          </Link>
         ))}
       </div>
     </div>
