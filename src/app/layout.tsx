@@ -1,5 +1,6 @@
 import "~/styles/globals.css";
 
+import { Toaster } from "sonner";
 import { type Metadata } from "next";
 import localFont from "next/font/local";
 
@@ -22,7 +23,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${font.variable} font-sans`}>
       <body>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <TRPCReactProvider>
+          <Toaster />
+
+          {children}
+        </TRPCReactProvider>
       </body>
     </html>
   );
