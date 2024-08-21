@@ -2,6 +2,7 @@ import { z } from "zod";
 import { Position } from "@prisma/client";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
+import { TRPCError } from "@trpc/server";
 
 const PositionEnum = z.nativeEnum(Position);
 
@@ -32,6 +33,24 @@ export const clubRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      const existingPlayer = await ctx.db.player.findFirst({
+        where: {
+          name: {
+            equals: input.name,
+            mode: "insensitive",
+          },
+          clubId: input.clubId,
+        },
+        select: { id: true },
+      });
+
+      if (existingPlayer) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Player already exists in this club",
+        });
+      }
+
       await ctx.db.player.create({
         data: {
           ...input,

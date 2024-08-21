@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import { db } from "~/server/db";
 import { AddPlayer } from "./add-player";
 import { getServerAuthSession } from "~/server/auth";
+import { getCategorizedPlayers } from "~/lib/utils";
 
 export const ClubServer = async ({ clubId }: { clubId: string }) => {
   const session = await getServerAuthSession();
@@ -26,6 +27,8 @@ export const ClubServer = async ({ clubId }: { clubId: string }) => {
 
   if (!club) notFound();
 
+  const players = getCategorizedPlayers(club.players);
+
   return (
     <div className="flex flex-col gap-y-10 px-20 py-20">
       <div className="flex items-center justify-between">
@@ -42,16 +45,34 @@ export const ClubServer = async ({ clubId }: { clubId: string }) => {
         <AddPlayer clubId={clubId} />
       </div>
 
-      <div className="flex flex-col gap-y-2">
-        {club.players.map((player) => (
-          <div key={player.id} className="flex items-center gap-x-2">
-            <Image
-              src={club.jerseyUrl}
-              alt={`${player.name} jersey`}
-              width={30}
-              height={30}
-            />
-            <p>{player.name}</p>
+      <div className="grid grid-cols-4 gap-8">
+        {Object.entries(players).map(([position, players]) => (
+          <div key={position} className="flex flex-col gap-y-4">
+            <div className="flex items-center justify-between">
+              <h4 className="font-bold">
+                {position.charAt(0) + position.slice(1).toLowerCase()}
+              </h4>
+              <span>£</span>
+            </div>
+
+            {players.map((player) => (
+              <div
+                key={player.id}
+                className="flex items-center justify-between"
+              >
+                <div className="flex items-center gap-x-2">
+                  <Image
+                    src={club.jerseyUrl}
+                    alt={`${player.name} jersey`}
+                    width={30}
+                    height={30}
+                  />
+                  <p>{player.name}</p>
+                </div>
+
+                <span className="font-light">{player.price.toFixed(1)}m</span>
+              </div>
+            ))}
           </div>
         ))}
       </div>
