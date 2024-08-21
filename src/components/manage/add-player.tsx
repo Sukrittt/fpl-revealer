@@ -48,11 +48,13 @@ export const AddPlayer = ({ clubId }: { clubId: string }) => {
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [displayName, setDisplayName] = useState("");
   const [position, setPosition] = useState<Position | null>(null);
 
   const resetValues = () => {
     setName("");
     setPrice("");
+    setDisplayName("");
     setPosition(null);
   };
 
@@ -78,6 +80,7 @@ export const AddPlayer = ({ clubId }: { clubId: string }) => {
       price: Number(price),
       position,
       clubId,
+      displayName,
     });
   };
 
@@ -99,7 +102,15 @@ export const AddPlayer = ({ clubId }: { clubId: string }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="bg-white px-2 py-1"
-            placeholder="Type player name"
+            placeholder="Player name"
+          />
+
+          <Input
+            disabled={isLoading}
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            className="bg-white px-2 py-1"
+            placeholder="Display name (optional)"
           />
 
           <div className="grid grid-cols-2 gap-x-2">
@@ -109,7 +120,7 @@ export const AddPlayer = ({ clubId }: { clubId: string }) => {
               type="number"
               onChange={(e) => setPrice(e.target.value)}
               className="bg-white px-2 py-1"
-              placeholder="Type player price"
+              placeholder="Player price"
             />
 
             <Select
@@ -118,7 +129,7 @@ export const AddPlayer = ({ clubId }: { clubId: string }) => {
               onValueChange={(value) => setPosition(value as Position)}
             >
               <SelectTrigger>
-                <SelectValue placeholder="Select position" />
+                <SelectValue placeholder="Position" />
               </SelectTrigger>
               <SelectContent>
                 {positionOpts.map((opt) => (

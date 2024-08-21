@@ -103,8 +103,10 @@ export const CreateClub = () => {
     } finally {
       if (type === "logo") {
         setUploadingLogo(false);
-      } else {
+      } else if (type === "jersey") {
         setUploadingJersey(false);
+      } else {
+        setUploadingGoalkeeperJersey(false);
       }
     }
   };
@@ -173,15 +175,19 @@ export const CreateClub = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             className="bg-white px-2 py-1"
-            placeholder="Type club name"
+            placeholder="Club name"
           />
 
           <Input
             disabled={isLoading}
             value={shortName}
-            onChange={(e) => setShortName(e.target.value)}
+            onChange={(e) => {
+              if (e.target.value.length > 3) return;
+
+              setShortName(e.target.value.toUpperCase());
+            }}
             className="bg-white px-2 py-1"
-            placeholder="Type club short name (3 characters), e.g. MUN"
+            placeholder="Club short name (3 characters), e.g. MUN"
           />
 
           <div className="grid grid-cols-3 gap-x-2">

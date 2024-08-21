@@ -2,13 +2,9 @@ import Image from "next/image";
 import { UserPlus, X } from "lucide-react";
 import { type Position } from "@prisma/client";
 
-import { cn, getCategorizedFplPlayers } from "~/lib/utils";
-import type {
-  ExtendedFplPlayer,
-  ExtendedFplTeam,
-  ExtendedPlayer,
-} from "~/types";
+import { getCategorizedFplPlayers } from "~/lib/utils";
 import { RemovePlayerFromFpl } from "./remove-player";
+import type { ExtendedFplPlayer, ExtendedFplTeam } from "~/types";
 
 interface FplFieldProps {
   fplTeam: ExtendedFplTeam;
@@ -122,7 +118,12 @@ const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
       <div className="flex h-full w-full items-center justify-center">
         <div className="relative h-full w-3/4 p-4">
           <Image
-            src={fplPlayer.player.club.jerseyUrl}
+            src={
+              fplPlayer.player.position === "GOALKEEPER"
+                ? (fplPlayer.player.club.goalkeeperJerseyUrl ??
+                  fplPlayer.player.club.jerseyUrl)
+                : fplPlayer.player.club.jerseyUrl
+            }
             alt={`${fplPlayer.player.name} jersey`}
             fill
           />
@@ -132,7 +133,7 @@ const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
       <div className="bg-white px-4 py-1">
         {/* TODO: Replace with display name if available */}
         <p className="text-center text-sm">
-          {fplPlayer.player.name.split(" ")[0]}
+          {fplPlayer.player.displayName ?? fplPlayer.player.name.split(" ")[0]}
         </p>
       </div>
     </div>

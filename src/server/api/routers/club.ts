@@ -49,6 +49,7 @@ export const clubRouter = createTRPCRouter({
         price: z.number().positive(),
         position: PositionEnum,
         clubId: z.string(),
+        displayName: z.string(),
       }),
     )
     .mutation(async ({ input, ctx }) => {

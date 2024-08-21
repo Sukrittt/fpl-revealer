@@ -62,7 +62,11 @@ export const ClubServer = async ({ clubId }: { clubId: string }) => {
               >
                 <div className="flex items-center gap-x-2">
                   <Image
-                    src={club.jerseyUrl}
+                    src={
+                      position === "GOALKEEPER"
+                        ? (club.goalkeeperJerseyUrl ?? club.jerseyUrl)
+                        : club.jerseyUrl
+                    }
                     alt={`${player.name} jersey`}
                     width={30}
                     height={30}
