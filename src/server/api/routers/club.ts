@@ -108,28 +108,82 @@ export const clubRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      const existingPlayer = await ctx.db.player.findFirst({
-        where: {
-          name: {
-            equals: input.name,
-            mode: "insensitive",
-          },
-          clubId: input.clubId,
-        },
-        select: { id: true },
-      });
-
-      if (existingPlayer) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Player already exists in this club",
-        });
-      }
-
       await ctx.db.player.create({
         data: {
           ...input,
           userId: ctx.session.user.id,
+        },
+      });
+    }),
+  editPlayer: protectedProcedure
+    .input(
+      z.object({
+        playerId: z.string(),
+        name: z.string(),
+        price: z.number().positive(),
+        position: PositionEnum,
+        clubId: z.string(),
+        displayName: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { playerId, clubId, ...payload } = input;
+
+      const existingPlayer = await ctx.db.player.findFirst({
+        where: {
+          id: playerId,
+          clubId,
+        },
+        select: { id: true },
+      });
+
+      if (!existingPlayer) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "This player does not exist.",
+        });
+      }
+
+      await ctx.db.player.update({
+        where: {
+          id: playerId,
+          clubId,
+        },
+        data: {
+          ...payload,
+        },
+      });
+    }),
+
+  deletePlayer: protectedProcedure
+    .input(
+      z.object({
+        playerId: z.string(),
+        clubId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { playerId, clubId } = input;
+
+      const existingPlayer = await ctx.db.player.findFirst({
+        where: {
+          id: playerId,
+          clubId,
+        },
+        select: { id: true },
+      });
+
+      if (!existingPlayer) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "This player does not exist.",
+        });
+      }
+
+      await ctx.db.player.delete({
+        where: {
+          id: playerId,
+          clubId,
         },
       });
     }),

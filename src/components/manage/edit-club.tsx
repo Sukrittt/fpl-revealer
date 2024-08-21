@@ -126,20 +126,11 @@ export const EditClub = ({ club }: { club: ExtendedClub }) => {
     };
   }
 
-  const resetValues = () => {
-    setName("");
-    setLogoUrl(null);
-    setJerseyUrl(null);
-    setGoalkeeperJerseyUrl(null);
-    setShortName("");
-  };
-
   const { mutate: editClub, isPending: isLoading } = api.club.edit.useMutation({
     onSuccess: () => {
-      toast.success("Club created successfully.");
+      toast.success("Changes saved successfully.");
 
       router.refresh();
-      resetValues();
       setOpen(false);
     },
   });
@@ -263,6 +254,12 @@ export const EditClub = ({ club }: { club: ExtendedClub }) => {
           />
 
           <button
+            disabled={
+              uploadingLogo ||
+              uploadingJersey ||
+              uploadingGoalkeeperJersey ||
+              isLoading
+            }
             onClick={handleEditClub}
             className={cn(
               "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",

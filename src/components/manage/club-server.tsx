@@ -6,6 +6,7 @@ import { AddPlayer } from "./add-player";
 import { getServerAuthSession } from "~/server/auth";
 import { getCategorizedPlayers } from "~/lib/utils";
 import { EditClub } from "./edit-club";
+import { EditPlayer } from "./edit-player";
 
 export const ClubServer = async ({ clubId }: { clubId: string }) => {
   const session = await getServerAuthSession();
@@ -23,7 +24,11 @@ export const ClubServer = async ({ clubId }: { clubId: string }) => {
 
   const club = await db.club.findFirst({
     where: { id: clubId },
-    include: { players: true },
+    include: {
+      players: {
+        orderBy: { price: "desc" },
+      },
+    },
   });
 
   if (!club) notFound();
@@ -60,26 +65,25 @@ export const ClubServer = async ({ clubId }: { clubId: string }) => {
             </div>
 
             {players.map((player) => (
-              <div
-                key={player.id}
-                className="flex items-center justify-between"
-              >
-                <div className="flex items-center gap-x-2">
-                  <Image
-                    src={
-                      position === "GOALKEEPER"
-                        ? (club.goalkeeperJerseyUrl ?? club.jerseyUrl)
-                        : club.jerseyUrl
-                    }
-                    alt={`${player.name} jersey`}
-                    width={30}
-                    height={30}
-                  />
-                  <p>{player.name}</p>
-                </div>
+              <EditPlayer key={player.id} player={player}>
+                <div className="flex cursor-pointer items-center justify-between rounded-md px-2 py-1 transition hover:bg-neutral-100">
+                  <div className="flex items-center gap-x-2">
+                    <Image
+                      src={
+                        position === "GOALKEEPER"
+                          ? (club.goalkeeperJerseyUrl ?? club.jerseyUrl)
+                          : club.jerseyUrl
+                      }
+                      alt={`${player.name} jersey`}
+                      width={30}
+                      height={30}
+                    />
+                    <p>{player.displayName ?? player.name}</p>
+                  </div>
 
-                <span className="font-light">{player.price.toFixed(1)}m</span>
-              </div>
+                  <span className="font-light">{player.price.toFixed(1)}m</span>
+                </div>
+              </EditPlayer>
             ))}
           </div>
         ))}

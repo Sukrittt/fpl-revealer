@@ -2,7 +2,7 @@
 import { toast } from "sonner";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { type Position } from "@prisma/client";
+import { Player, type Position } from "@prisma/client";
 
 import {
   Dialog,
@@ -21,6 +21,7 @@ import {
 import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
 import { Input } from "~/components/ui/input";
+import { DeletePlayer } from "./delete-player";
 
 const positionOpts: { label: string; value: Position }[] = [
   {
@@ -41,45 +42,43 @@ const positionOpts: { label: string; value: Position }[] = [
   },
 ];
 
-export const AddPlayer = ({ clubId }: { clubId: string }) => {
+interface EditPlayerProps {
+  player: Player;
+  children: React.ReactNode;
+}
+
+export const EditPlayer: React.FC<EditPlayerProps> = ({ player, children }) => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
 
-  const [name, setName] = useState("");
-  const [price, setPrice] = useState("");
-  const [displayName, setDisplayName] = useState("");
-  const [position, setPosition] = useState<Position | null>(null);
+  const [name, setName] = useState(player.name);
+  const [price, setPrice] = useState(player.price.toString());
+  const [displayName, setDisplayName] = useState(player.displayName ?? "");
+  const [position, setPosition] = useState(player.position);
 
-  const resetValues = () => {
-    setName("");
-    setPrice("");
-    setDisplayName("");
-    setPosition(null);
-  };
-
-  const { mutate: addPlayer, isPending: isLoading } =
-    api.club.addPlayer.useMutation({
+  const { mutate: editPlayer, isPending: isLoading } =
+    api.club.editPlayer.useMutation({
       onSuccess: () => {
-        toast.success("Player added successfully.");
+        toast.success("Changes saved successfully.");
 
         router.refresh();
-        resetValues();
         setOpen(false);
       },
     });
 
-  const handleAddPlayer = async () => {
+  const handleEditPlayer = async () => {
     if (!name || !price || !position) {
       toast.error("Please fill all fields.");
       return;
     }
 
-    addPlayer({
+    editPlayer({
+      playerId: player.id,
+      clubId: player.clubId,
       name,
       price: Number(price),
       position,
-      clubId,
       displayName,
     });
   };
@@ -87,13 +86,11 @@ export const AddPlayer = ({ clubId }: { clubId: string }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div className="cursor-pointer rounded-md border bg-neutral-100 px-4 py-1 text-sm">
-          Add Player
-        </div>
+        <div>{children}</div>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Add Player</DialogTitle>
+          <DialogTitle>Edit Player</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-y-2">
@@ -141,18 +138,22 @@ export const AddPlayer = ({ clubId }: { clubId: string }) => {
             </Select>
           </div>
 
-          <button
-            disabled={isLoading}
-            onClick={handleAddPlayer}
-            className={cn(
-              "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",
-              {
-                "cursor-default opacity-60": isLoading,
-              },
-            )}
-          >
-            Add
-          </button>
+          <div className="grid grid-cols-2 gap-x-2">
+            <DeletePlayer playerId={player.id} clubId={player.clubId} />
+
+            <button
+              onClick={handleEditPlayer}
+              disabled={isLoading}
+              className={cn(
+                "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",
+                {
+                  "cursor-default opacity-60": isLoading,
+                },
+              )}
+            >
+              Save
+            </button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

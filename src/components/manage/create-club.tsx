@@ -260,6 +260,12 @@ export const CreateClub = () => {
           />
 
           <button
+            disabled={
+              uploadingLogo ||
+              uploadingJersey ||
+              uploadingGoalkeeperJersey ||
+              isLoading
+            }
             onClick={handleCreateClub}
             className={cn(
               "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",
