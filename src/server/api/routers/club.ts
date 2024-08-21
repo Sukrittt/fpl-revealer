@@ -16,6 +16,23 @@ export const clubRouter = createTRPCRouter({
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      const existingClub = await ctx.db.club.findFirst({
+        where: {
+          name: {
+            equals: input.name,
+            mode: "insensitive",
+          },
+        },
+        select: { id: true },
+      });
+
+      if (existingClub) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This club is already added.",
+        });
+      }
+
       await ctx.db.club.create({
         data: {
           ...input,
