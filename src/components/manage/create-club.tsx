@@ -198,7 +198,7 @@ export const CreateClub = () => {
             type="file"
           />
 
-          <div
+          <button
             onClick={handleCreateClub}
             className={cn(
               "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",
@@ -209,7 +209,7 @@ export const CreateClub = () => {
             )}
           >
             Create
-          </div>
+          </button>
         </div>
       </DialogContent>
     </Dialog>
