@@ -2,7 +2,7 @@ import { twMerge } from "tailwind-merge";
 import { type Player } from "@prisma/client";
 import { type ClassValue, clsx } from "clsx";
 
-import type { ExtendedFplPlayer } from "~/types";
+import type { ExtendedFplPlayer, ExtendedPlayer } from "~/types";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -33,6 +33,22 @@ export function getCategorizedFplPlayers(players: ExtendedFplPlayer[]) {
 
   players.forEach((player) => {
     categorizedPlayers[player.player.position].push(player);
+  });
+
+  return categorizedPlayers;
+}
+export function getCategorizedPlayersWithClubs(
+  players: ExtendedPlayer["player"][],
+) {
+  const categorizedPlayers = {
+    GOALKEEPER: [] as ExtendedPlayer["player"][],
+    DEFENDER: [] as ExtendedPlayer["player"][],
+    MIDFIELDER: [] as ExtendedPlayer["player"][],
+    FORWARD: [] as ExtendedPlayer["player"][],
+  };
+
+  players.forEach((player) => {
+    categorizedPlayers[player.position].push(player);
   });
 
   return categorizedPlayers;
