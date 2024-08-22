@@ -60,6 +60,7 @@ const config = {
       },
       fontFamily: {
         sans: ["var(--font-radikal-regular)"],
+        nike: ["var(--font-future-bold)"],
       },
       keyframes: {
         "accordion-down": {

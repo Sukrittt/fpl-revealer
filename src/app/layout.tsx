@@ -17,11 +17,19 @@ const font = localFont({
   variable: "--font-radikal-regular",
 });
 
+const nikeFont = localFont({
+  src: "../../public/fonts/futura-bold.ttf",
+  variable: "--font-future-bold",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${font.variable} font-sans`}>
+    <html
+      lang="en"
+      className={`${font.variable} ${nikeFont.variable} font-sans`}
+    >
       <body>
         <TRPCReactProvider>
           <Provider>{children}</Provider>

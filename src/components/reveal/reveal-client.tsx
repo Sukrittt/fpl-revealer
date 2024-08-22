@@ -74,7 +74,7 @@ export const RevealClient: React.FC<RevealClientProps> = ({ reveal }) => {
   }, [sound]);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-y-2 bg-[url('/images/background.png')] bg-center text-white">
+    <div className="font-nike flex h-screen w-full flex-col items-center justify-center gap-y-2 bg-[url('/images/background.png')] bg-center text-white">
       {revealSide === "home" && (
         <>
           {revealStep === "team-name" && (
@@ -252,7 +252,7 @@ const HomePlayerReveal: React.FC<HomePlayerReveal> = ({
 
           <div className="absolute top-1/2 w-full">
             <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
-              <p className="text-reveal text-5xl font-bold">
+              <p className="text-reveal text-5xl font-extrabold">
                 {activePlayer.player.displayName ?? activePlayer.player.name}
               </p>
               <p className="text-reveal text-lg">
@@ -427,7 +427,7 @@ const AwayPlayerReveal: React.FC<AwayPlayerReveal> = ({ fplPlayers }) => {
 
           <div className="absolute top-1/2 w-full">
             <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
-              <p className="text-reveal text-5xl font-bold">
+              <p className="text-reveal text-5xl font-extrabold">
                 {activePlayer.player.displayName ?? activePlayer.player.name}
               </p>
               <p className="text-reveal text-lg">
