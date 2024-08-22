@@ -262,6 +262,9 @@ export const clubRouter = createTRPCRouter({
         include: {
           club: true,
         },
+        orderBy: {
+          price: "desc",
+        },
       });
 
       return players;
