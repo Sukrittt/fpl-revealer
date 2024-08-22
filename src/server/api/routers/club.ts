@@ -7,6 +7,15 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 const PositionEnum = z.nativeEnum(Position);
 
 export const clubRouter = createTRPCRouter({
+  get: protectedProcedure.query(async ({ ctx }) => {
+    const clubs = await ctx.db.club.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
+
+    return clubs;
+  }),
   create: protectedProcedure
     .input(
       z.object({
@@ -218,13 +227,43 @@ export const clubRouter = createTRPCRouter({
       });
     }),
 
-  getPlayers: protectedProcedure.query(async ({ ctx }) => {
-    const players = await ctx.db.player.findMany({
-      include: {
-        club: true,
-      },
-    });
+  getPlayers: protectedProcedure
+    .input(
+      z.object({
+        clubId: z.string().optional(),
+        position: PositionEnum.optional(),
+        maxPrice: z.number(),
+        name: z.string().optional(),
+      }),
+    )
+    .query(async ({ input, ctx }) => {
+      const players = await ctx.db.player.findMany({
+        where: {
+          OR: [
+            {
+              name: {
+                contains: input.name,
+                mode: "insensitive",
+              },
+            },
+            {
+              displayName: {
+                contains: input.name,
+                mode: "insensitive",
+              },
+            },
+          ],
+          clubId: input.clubId,
+          position: input.position,
+          price: {
+            lte: input.maxPrice,
+          },
+        },
+        include: {
+          club: true,
+        },
+      });
 
-    return players;
-  }),
+      return players;
+    }),
 });

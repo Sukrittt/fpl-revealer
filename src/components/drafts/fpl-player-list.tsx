@@ -1,8 +1,17 @@
 import Image from "next/image";
+import { useAtom } from "jotai";
+
+import {
+  clubFitlerAtom,
+  maxPlayerPriceAtom,
+  playerSearchAtom,
+  positionFilterAtom,
+} from "~/atom";
+import { cn } from "~/lib/utils";
 import { api } from "~/trpc/react";
+import { FplFilter } from "./fpl-filter";
 import { type ExtendedFplTeam } from "~/types";
 import { AddPlayerToFpl } from "./add-player-fpl";
-import { cn } from "~/lib/utils";
 
 interface FplPlayerListProps {
   fplTeam: ExtendedFplTeam;
@@ -16,11 +25,23 @@ const positionShorthand = {
 };
 
 export const FplPlayerList: React.FC<FplPlayerListProps> = ({ fplTeam }) => {
-  const { data: players, isLoading } = api.club.getPlayers.useQuery();
+  const [clubId] = useAtom(clubFitlerAtom);
+  const [position] = useAtom(positionFilterAtom);
+  const [maxPrice] = useAtom(maxPlayerPriceAtom);
+  const [name] = useAtom(playerSearchAtom);
+
+  const { data: players, isLoading } = api.club.getPlayers.useQuery({
+    clubId: clubId ?? undefined,
+    position: position ?? undefined,
+    maxPrice,
+    name: name ?? undefined,
+  });
 
   return (
     <div className="flex flex-col gap-y-4">
       <h4 className="text-lg">Player Selection</h4>
+
+      <FplFilter />
 
       <div className="flex flex-col gap-y-2">
         <div className="flex items-center justify-end pr-4 text-xs font-bold text-muted-foreground">
@@ -55,7 +76,12 @@ export const FplPlayerList: React.FC<FplPlayerListProps> = ({ fplTeam }) => {
                   >
                     <div className="flex items-center gap-x-4">
                       <Image
-                        src={player.club.jerseyUrl}
+                        src={
+                          player.position === "GOALKEEPER"
+                            ? (player.club.goalkeeperJerseyUrl ??
+                              player.club.jerseyUrl)
+                            : player.club.jerseyUrl
+                        }
                         alt={`${player.name} jersey`}
                         width={25}
                         height={25}
