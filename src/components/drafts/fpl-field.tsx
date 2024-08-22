@@ -115,7 +115,7 @@ const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
 
         <div className="bg-white px-4 py-1">
           <p className="text-center text-sm">
-            {fplPlayer.player.displayName ??
+            {fplPlayer.player.displayName?.split(" ")[0] ??
               fplPlayer.player.name.split(" ")[0]}
           </p>
         </div>

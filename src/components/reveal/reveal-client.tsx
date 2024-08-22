@@ -74,7 +74,7 @@ export const RevealClient: React.FC<RevealClientProps> = ({ reveal }) => {
   }, [sound]);
 
   return (
-    <div className="font-nike flex h-screen w-full flex-col items-center justify-center gap-y-2 bg-[url('/images/background.png')] bg-center text-white">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-y-2 bg-[url('/images/background.png')] bg-center font-nike text-white">
       {revealSide === "home" && (
         <>
           {revealStep === "team-name" && (
@@ -212,6 +212,7 @@ const HomePlayerReveal: React.FC<HomePlayerReveal> = ({
         .timeline()
         .from(`.jersey-reveal`, {
           scale: 0.7,
+          opacity: playerRevealCount < 12 ? 1 : 0,
           duration: 0.75,
           stagger: 0.1,
         })
@@ -387,6 +388,7 @@ const AwayPlayerReveal: React.FC<AwayPlayerReveal> = ({ fplPlayers }) => {
         .timeline()
         .from(`.jersey-reveal`, {
           scale: 0.7,
+          opacity: playerRevealCount < 12 ? 1 : 0,
           duration: 0.75,
           stagger: 0.1,
         })
