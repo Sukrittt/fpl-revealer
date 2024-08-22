@@ -19,8 +19,8 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
     <div className="relative h-[750px] w-full">
       <Image src="/images/pitch.svg" alt="pitch" fill />
 
-      {/* Goalkeepers*/}
-      <div className="absolute left-[275px] top-16">
+      <div className="absolute flex h-[750px] w-full flex-col items-center justify-between">
+        {/* Goalkeepers*/}
         <div className="flex items-center justify-center gap-x-32">
           {2 - players.GOALKEEPER.length > 0 &&
             Array.from({ length: 2 - players.GOALKEEPER.length }).map(
@@ -33,10 +33,8 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
             <PlayerCard key={player.id} fplPlayer={player} />
           ))}
         </div>
-      </div>
 
-      {/* Defenders */}
-      <div className="absolute left-20 top-60">
+        {/* Defenders */}
         <div className="flex items-center justify-center gap-x-16">
           {5 - players.DEFENDER.length > 0 &&
             Array.from({ length: 5 - players.DEFENDER.length }).map(
@@ -47,10 +45,8 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
             <PlayerCard key={player.id} fplPlayer={player} />
           ))}
         </div>
-      </div>
 
-      {/* Midfielders */}
-      <div className="absolute left-20 top-[416px]">
+        {/* Midfielders */}
         <div className="flex items-center justify-center gap-x-16">
           {5 - players.MIDFIELDER.length > 0 &&
             Array.from({ length: 5 - players.MIDFIELDER.length }).map(
@@ -63,10 +59,8 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
             <PlayerCard key={player.id} fplPlayer={player} />
           ))}
         </div>
-      </div>
 
-      {/* Forwards */}
-      <div className="absolute left-28 top-[600px]">
+        {/* Forwards */}
         <div className="flex items-center justify-center gap-x-[200px]">
           {3 - players.FORWARD.length > 0 &&
             Array.from({ length: 3 - players.FORWARD.length }).map(
