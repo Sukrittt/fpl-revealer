@@ -33,7 +33,7 @@ export const ManageServer = async () => {
         <CreateClub />
       </div>
 
-      <div className="grid grid-cols-5 items-center gap-x-4 px-20 py-10">
+      <div className="grid grid-cols-5 items-center gap-4 px-20 py-10">
         {clubs.map((club) => (
           <Link
             href={`/manage/${club.id}`}
@@ -48,7 +48,9 @@ export const ManageServer = async () => {
             />
 
             <div className="flex items-center justify-between pr-4">
-              <p className="text-lg font-bold text-[#37003c]">{club.name}</p>
+              <p className="text-lg font-extrabold text-[#37003c]">
+                {club.name}
+              </p>
               <MoveRight className="h-3 w-3" />
             </div>
           </Link>
