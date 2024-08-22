@@ -17,12 +17,14 @@ interface AddPlayerToFplProps {
   player: ExtendedPlayer["player"];
   fplTeamId: string;
   children: React.ReactNode;
+  disabled?: boolean;
 }
 
 export const AddPlayerToFpl: React.FC<AddPlayerToFplProps> = ({
   player,
   fplTeamId,
   children,
+  disabled,
 }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -35,6 +37,8 @@ export const AddPlayerToFpl: React.FC<AddPlayerToFplProps> = ({
   });
 
   const handleAddPlayer = () => {
+    if (disabled) return;
+
     addPlayer({
       playerId: player.id,
       fplTeamId,
@@ -42,7 +46,7 @@ export const AddPlayerToFpl: React.FC<AddPlayerToFplProps> = ({
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open && disabled === undefined} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <div>{children}</div>
       </DialogTrigger>
