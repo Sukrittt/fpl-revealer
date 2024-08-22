@@ -137,6 +137,9 @@ model FplPlayer {
     userId String
     user   User   @relation(fields: [userId], references: [id])
 
+    isCaptain     Boolean? @default(false)
+    isViceCaptain Boolean? @default(false)
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

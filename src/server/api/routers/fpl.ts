@@ -166,6 +166,136 @@ export const fplRouter = createTRPCRouter({
         },
       });
     }),
+  makeCaptain: protectedProcedure
+    .input(
+      z.object({
+        fplPlayerId: z.string(),
+        fplTeamId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const existingFplPlayer = await ctx.db.fplPlayer.findFirst({
+        where: {
+          id: input.fplPlayerId,
+          userId: ctx.session.user.id,
+          fplTeamId: input.fplTeamId,
+        },
+        select: { isCaptain: true },
+      });
+
+      if (!existingFplPlayer) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "This player does not exist in your team.",
+        });
+      }
+
+      if (existingFplPlayer.isCaptain) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This player is already your captain.",
+        });
+      }
+
+      await ctx.db.fplPlayer.updateMany({
+        where: {
+          fplTeamId: input.fplTeamId,
+        },
+        data: {
+          isCaptain: false,
+        },
+      });
+
+      await ctx.db.fplPlayer.update({
+        where: {
+          id: input.fplPlayerId,
+        },
+        data: {
+          isCaptain: true,
+        },
+      });
+    }),
+  makeViceCaptain: protectedProcedure
+    .input(
+      z.object({
+        fplPlayerId: z.string(),
+        fplTeamId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const existingFplPlayer = await ctx.db.fplPlayer.findFirst({
+        where: {
+          id: input.fplPlayerId,
+          userId: ctx.session.user.id,
+          fplTeamId: input.fplTeamId,
+        },
+        select: { isViceCaptain: true },
+      });
+
+      if (!existingFplPlayer) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "This player does not exist in your team.",
+        });
+      }
+
+      if (existingFplPlayer.isViceCaptain) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This player is already your vice captain.",
+        });
+      }
+
+      await ctx.db.fplPlayer.updateMany({
+        where: {
+          fplTeamId: input.fplTeamId,
+        },
+        data: {
+          isViceCaptain: false,
+        },
+      });
+
+      await ctx.db.fplPlayer.update({
+        where: {
+          id: input.fplPlayerId,
+        },
+        data: {
+          isViceCaptain: true,
+        },
+      });
+    }),
+  toggleSubstite: protectedProcedure
+    .input(
+      z.object({
+        fplPlayerId: z.string(),
+        fplTeamId: z.string(),
+      }),
+    )
+    .mutation(async ({ input, ctx }) => {
+      const existingFplPlayer = await ctx.db.fplPlayer.findFirst({
+        where: {
+          id: input.fplPlayerId,
+          userId: ctx.session.user.id,
+          fplTeamId: input.fplTeamId,
+        },
+      });
+
+      if (!existingFplPlayer) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "This player does not exist in your team.",
+        });
+      }
+
+      await ctx.db.fplPlayer.update({
+        where: {
+          id: input.fplPlayerId,
+        },
+        data: {
+          status: existingFplPlayer.status === "STARTER" ? "BENCH" : "STARTER",
+        },
+      });
+    }),
 });
 
 // Going with 4-4-2 formation

@@ -3,6 +3,7 @@ import { useAtom } from "jotai";
 import { UserPlus, X } from "lucide-react";
 import { type Position } from "@prisma/client";
 
+import { FplPlayerInfo } from "./player-info";
 import { RemovePlayerFromFpl } from "./remove-player";
 import { getCategorizedFplPlayers } from "~/lib/utils";
 import { maxPlayerPriceAtom, positionFilterAtom } from "~/atom";
@@ -78,44 +79,59 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
 
 const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
   return (
-    <div className="relative flex h-32 w-24 flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] ring-offset-background transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none">
-      <RemovePlayerFromFpl
-        fplPlayerId={fplPlayer.id}
-        fplTeamId={fplPlayer.fplTeamId}
-        playerName={fplPlayer.player.name}
-      >
-        <div className="absolute left-1 top-1">
-          <div className="flex cursor-pointer items-center justify-center rounded-full bg-foreground p-0.5">
-            <X className="m-auto h-3 w-3 text-white" />
+    <FplPlayerInfo fplPlayer={fplPlayer}>
+      <div className="relative flex h-36 w-24 cursor-pointer flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] ring-offset-background transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none">
+        <RemovePlayerFromFpl
+          fplPlayerId={fplPlayer.id}
+          fplTeamId={fplPlayer.fplTeamId}
+          playerName={fplPlayer.player.name}
+        >
+          <div className="absolute left-1 top-1">
+            <div className="flex cursor-pointer items-center justify-center rounded-full bg-foreground p-0.5">
+              <X className="m-auto h-3 w-3 text-white" />
+            </div>
+          </div>
+        </RemovePlayerFromFpl>
+
+        <p className="text-center text-sm text-white">
+          £{fplPlayer.player.price.toFixed(1)}m
+        </p>
+
+        <div className="flex h-full w-full items-center justify-center">
+          <div className="relative h-full w-3/4 p-4">
+            <Image
+              src={
+                fplPlayer.player.position === "GOALKEEPER"
+                  ? (fplPlayer.player.club.goalkeeperJerseyUrl ??
+                    fplPlayer.player.club.jerseyUrl)
+                  : fplPlayer.player.club.jerseyUrl
+              }
+              alt={`${fplPlayer.player.name} jersey`}
+              fill
+              quality={100}
+            />
           </div>
         </div>
-      </RemovePlayerFromFpl>
 
-      <p className="text-center text-white">
-        £{fplPlayer.player.price.toFixed(1)}m
-      </p>
+        <div className="bg-white px-4 py-1">
+          <p className="text-center text-sm">
+            {fplPlayer.player.displayName ??
+              fplPlayer.player.name.split(" ")[0]}
+          </p>
+        </div>
 
-      <div className="flex h-full w-full items-center justify-center">
-        <div className="relative h-full w-3/4 p-4">
-          <Image
-            src={
-              fplPlayer.player.position === "GOALKEEPER"
-                ? (fplPlayer.player.club.goalkeeperJerseyUrl ??
-                  fplPlayer.player.club.jerseyUrl)
-                : fplPlayer.player.club.jerseyUrl
-            }
-            alt={`${fplPlayer.player.name} jersey`}
-            fill
-          />
+        <div className="flex items-center justify-center gap-x-2 bg-white/80 px-4 py-1">
+          <p className="text-center text-[10px]">
+            {fplPlayer.status === "STARTER" ? "Starter" : "Bench"}
+          </p>
+          {fplPlayer.isCaptain || fplPlayer.isViceCaptain ? (
+            <div className="flex h-4 w-4 items-center justify-center rounded-full bg-black text-[8px] text-white">
+              <span className="h-fit">{fplPlayer.isCaptain ? "C" : "V"}</span>
+            </div>
+          ) : null}
         </div>
       </div>
-
-      <div className="bg-white px-4 py-1">
-        <p className="text-center text-sm">
-          {fplPlayer.player.displayName ?? fplPlayer.player.name.split(" ")[0]}
-        </p>
-      </div>
-    </div>
+    </FplPlayerInfo>
   );
 };
 
@@ -144,7 +160,7 @@ const EmptyPlayerCard = ({ position }: EmptyPlayerCardProps) => {
   return (
     <div
       onClick={handleCardClick}
-      className="flex h-32 w-24 cursor-pointer flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] ring-offset-background transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none"
+      className="flex h-36 w-24 cursor-pointer flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] ring-offset-background transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none"
     >
       <div className="flex h-full w-full flex-col items-center justify-center gap-y-1 px-4 text-white">
         <UserPlus className="h-4 w-4" />
