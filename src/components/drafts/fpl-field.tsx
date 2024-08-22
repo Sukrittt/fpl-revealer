@@ -1,9 +1,11 @@
 import Image from "next/image";
+import { useAtom } from "jotai";
 import { UserPlus, X } from "lucide-react";
 import { type Position } from "@prisma/client";
 
-import { getCategorizedFplPlayers } from "~/lib/utils";
 import { RemovePlayerFromFpl } from "./remove-player";
+import { getCategorizedFplPlayers } from "~/lib/utils";
+import { maxPlayerPriceAtom, positionFilterAtom } from "~/atom";
 import type { ExtendedFplPlayer, ExtendedFplTeam } from "~/types";
 
 interface FplFieldProps {
@@ -23,11 +25,7 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
           {2 - players.GOALKEEPER.length > 0 &&
             Array.from({ length: 2 - players.GOALKEEPER.length }).map(
               (_, index) => (
-                <EmptyPlayerCard
-                  key={index}
-                  index={index}
-                  position="GOALKEEPER"
-                />
+                <EmptyPlayerCard key={index} position="GOALKEEPER" />
               ),
             )}
 
@@ -42,13 +40,7 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
         <div className="flex items-center justify-center gap-x-16">
           {5 - players.DEFENDER.length > 0 &&
             Array.from({ length: 5 - players.DEFENDER.length }).map(
-              (_, index) => (
-                <EmptyPlayerCard
-                  key={index}
-                  index={index}
-                  position="DEFENDER"
-                />
-              ),
+              (_, index) => <EmptyPlayerCard key={index} position="DEFENDER" />,
             )}
 
           {players.DEFENDER.map((player) => (
@@ -63,11 +55,7 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
           {5 - players.MIDFIELDER.length > 0 &&
             Array.from({ length: 5 - players.MIDFIELDER.length }).map(
               (_, index) => (
-                <EmptyPlayerCard
-                  key={index}
-                  index={index}
-                  position="MIDFIELDER"
-                />
+                <EmptyPlayerCard key={index} position="MIDFIELDER" />
               ),
             )}
 
@@ -82,9 +70,7 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
         <div className="flex items-center justify-center gap-x-[200px]">
           {3 - players.FORWARD.length > 0 &&
             Array.from({ length: 3 - players.FORWARD.length }).map(
-              (_, index) => (
-                <EmptyPlayerCard key={index} index={index} position="FORWARD" />
-              ),
+              (_, index) => <EmptyPlayerCard key={index} position="FORWARD" />,
             )}
 
           {players.FORWARD.map((player) => (
@@ -98,14 +84,14 @@ export const FplField: React.FC<FplFieldProps> = ({ fplTeam }) => {
 
 const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
   return (
-    <div className="ring-offset-background relative flex h-32 w-24 flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none">
+    <div className="relative flex h-32 w-24 flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] ring-offset-background transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none">
       <RemovePlayerFromFpl
         fplPlayerId={fplPlayer.id}
         fplTeamId={fplPlayer.fplTeamId}
         playerName={fplPlayer.player.name}
       >
         <div className="absolute left-1 top-1">
-          <div className="bg-foreground flex cursor-pointer items-center justify-center rounded-full p-0.5">
+          <div className="flex cursor-pointer items-center justify-center rounded-full bg-foreground p-0.5">
             <X className="m-auto h-3 w-3 text-white" />
           </div>
         </div>
@@ -131,7 +117,6 @@ const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
       </div>
 
       <div className="bg-white px-4 py-1">
-        {/* TODO: Replace with display name if available */}
         <p className="text-center text-sm">
           {fplPlayer.player.displayName ?? fplPlayer.player.name.split(" ")[0]}
         </p>
@@ -141,13 +126,32 @@ const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
 };
 
 interface EmptyPlayerCardProps {
-  index: number;
   position: Position;
 }
 
-const EmptyPlayerCard = ({ index, position }: EmptyPlayerCardProps) => {
+const EmptyPlayerCard = ({ position }: EmptyPlayerCardProps) => {
+  const [, setPosition] = useAtom(positionFilterAtom);
+  const [, setMaxPrice] = useAtom(maxPlayerPriceAtom);
+
+  const handleCardClick = () => {
+    setPosition(position);
+
+    if (position === "GOALKEEPER") {
+      setMaxPrice(5.5);
+    } else if (position === "MIDFIELDER") {
+      setMaxPrice(12.5);
+    } else if (position === "DEFENDER") {
+      setMaxPrice(7);
+    } else {
+      setMaxPrice(15);
+    }
+  };
+
   return (
-    <div className="ring-offset-background flex h-32 w-24 cursor-pointer flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none">
+    <div
+      onClick={handleCardClick}
+      className="flex h-32 w-24 cursor-pointer flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] ring-offset-background transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none"
+    >
       <div className="flex h-full w-full flex-col items-center justify-center gap-y-1 px-4 text-white">
         <UserPlus className="h-4 w-4" />
         <p className="text-sm">

@@ -62,6 +62,7 @@ export const FplFilter = () => {
 
     if (val === "UNDEFINED") {
       setMaxPrice(15);
+      return;
     }
 
     if (typedVal === "GOALKEEPER") {
@@ -157,7 +158,7 @@ export const FplFilter = () => {
           }}
         >
           <SelectTrigger>
-            {position ? <SelectValue /> : <p>All Positions</p>}
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {getMaxPriceOpts(position).map((price) => (

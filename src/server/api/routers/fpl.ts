@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { Position, Status } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
+import { type Position, Status } from "@prisma/client";
 
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
@@ -66,13 +66,29 @@ export const fplRouter = createTRPCRouter({
         where: {
           id: input.playerId,
         },
-        select: { id: true, position: true },
+        select: { id: true, position: true, clubId: true },
       });
 
       if (!player) {
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "This player does not exist.",
+        });
+      }
+
+      const playerLimitForClub = await ctx.db.fplPlayer.count({
+        where: {
+          fplTeamId: input.fplTeamId,
+          player: {
+            clubId: player.clubId,
+          },
+        },
+      });
+
+      if (playerLimitForClub >= 3) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "You can't have more than 3 players from the same club.",
         });
       }
 

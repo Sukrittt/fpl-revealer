@@ -20,7 +20,7 @@ export const FplTeamSelection: React.FC<FplTeamSelectionProps> = ({
 
   return (
     <div className="grid grid-cols-8 gap-x-4 px-40 pb-40">
-      <div className="col-span-6 flex flex-col gap-y-4 rounded-md p-2">
+      <div className="sticky top-20 col-span-6 flex h-max flex-col gap-y-4 rounded-md p-2">
         <div className="flex flex-col gap-y-1">
           <h4 className="text-lg font-bold">Transfers</h4>
           <p className="text-sm">
