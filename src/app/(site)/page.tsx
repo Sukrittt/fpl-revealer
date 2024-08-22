@@ -1,9 +1,6 @@
-import { api, HydrateClient } from "~/trpc/server";
-import { getServerAuthSession } from "~/server/auth";
+import { HydrateClient } from "~/trpc/server";
 
 export default async function Home() {
-  const session = await getServerAuthSession();
-
   return (
     <HydrateClient>
       <div className="flex h-screen items-center justify-center">
