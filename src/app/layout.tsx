@@ -1,10 +1,10 @@
 import "~/styles/globals.css";
 
-import { Toaster } from "sonner";
 import { type Metadata } from "next";
 import localFont from "next/font/local";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import { Provider } from "~/components/provider";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -24,9 +24,7 @@ export default function RootLayout({
     <html lang="en" className={`${font.variable} font-sans`}>
       <body>
         <TRPCReactProvider>
-          <Toaster />
-
-          {children}
+          <Provider>{children}</Provider>
         </TRPCReactProvider>
       </body>
     </html>

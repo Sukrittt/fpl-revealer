@@ -1,8 +1,10 @@
 "use client";
 
+import gsap from "gsap";
 import Image from "next/image";
 import useSound from "use-sound";
-import { useEffect, useState } from "react";
+import { useGSAP } from "@gsap/react";
+import { useEffect, useRef, useState } from "react";
 import type { PlayerStatus, RevealMatch } from "@prisma/client";
 
 import { getCategorizedFplPlayers } from "~/lib/utils";
@@ -72,11 +74,15 @@ export const RevealClient: React.FC<RevealClientProps> = ({ reveal }) => {
   }, [sound]);
 
   return (
-    <div className="flex h-screen w-full flex-col items-center justify-center gap-y-2 bg-black text-white">
+    <div className="flex h-screen w-full flex-col items-center justify-center gap-y-2 bg-[url('/images/background.png')] bg-center text-white">
       {revealSide === "home" && (
         <>
-          {revealStep === "team-name" && <p>{reveal.homeTeam.name}</p>}
-          {revealStep === "team-owner" && <p>{reveal.homeTeam.user.name}</p>}
+          {revealStep === "team-name" && (
+            <p className="text-2xl font-bold">{reveal.homeTeam.name}</p>
+          )}
+          {revealStep === "team-owner" && (
+            <p className="text-2xl font-bold">{reveal.homeTeam.user.name}</p>
+          )}
           {revealStep === "starting-11" && (
             <HomePlayerReveal
               startAwayTime={startTimer}
@@ -89,8 +95,12 @@ export const RevealClient: React.FC<RevealClientProps> = ({ reveal }) => {
 
       {revealSide === "away" && (
         <>
-          {revealStep === "team-name" && <p>{reveal.awayTeam.name}</p>}
-          {revealStep === "team-owner" && <p>{reveal.awayTeam.user.name}</p>}
+          {revealStep === "team-name" && (
+            <p className="text-2xl font-bold">{reveal.awayTeam.name}</p>
+          )}
+          {revealStep === "team-owner" && (
+            <p className="text-2xl font-bold">{reveal.awayTeam.user.name}</p>
+          )}
           {revealStep === "starting-11" && (
             <AwayPlayerReveal fplPlayers={reveal.awayTeam.fplPlayers} />
           )}
@@ -193,53 +203,96 @@ const HomePlayerReveal: React.FC<HomePlayerReveal> = ({
 
   const activePlayer = startingElevenPlayers[playerRevealCount - 1];
 
-  return activePlayer && playerRevealCount < 12 ? (
-    <div className="flex flex-col gap-y-2">
-      <Image
-        src={
-          activePlayer.player.position === "GOALKEEPER"
-            ? (activePlayer.player.club.goalkeeperJerseyUrl ??
-              activePlayer.player.club.jerseyUrl)
-            : activePlayer.player.club.jerseyUrl
-        }
-        className="object-contain"
-        alt={`${activePlayer.player.name} Jersey`}
-        width={100}
-        height={100}
-        quality={100}
-      />
+  const container = useRef<HTMLDivElement | null>(null);
+  const tl = useRef<gsap.core.Timeline | null>(null);
 
-      <p>{activePlayer.player.displayName ?? activePlayer.player.name}</p>
-      <p>
-        {activePlayer.player.position.charAt(0) +
-          activePlayer.player.position.slice(1).toLowerCase()}
-      </p>
-    </div>
-  ) : (
-    <div className="flex items-center gap-x-14">
-      {benchPlayers.map((fplPlayer) => (
-        <div key={fplPlayer.id} className="flex flex-col gap-y-2">
+  useGSAP(
+    () => {
+      tl.current = gsap
+        .timeline()
+        .from(`.jersey-reveal`, {
+          scale: 0.7,
+          duration: 0.75,
+          stagger: 0.1,
+        })
+        .from(
+          `.text-reveal`,
+          {
+            opacity: 0,
+            scale: 0.7,
+            duration: 0.75,
+            stagger: 0.1,
+          },
+          "-=0.7",
+        );
+    },
+    {
+      scope: container,
+      dependencies: [activePlayer],
+    },
+  );
+
+  return (
+    <div ref={container}>
+      {activePlayer && playerRevealCount < 12 ? (
+        <div className="relative flex w-full flex-col items-center gap-y-2">
           <Image
             src={
-              fplPlayer.player.position === "GOALKEEPER"
-                ? (fplPlayer.player.club.goalkeeperJerseyUrl ??
-                  fplPlayer.player.club.jerseyUrl)
-                : fplPlayer.player.club.jerseyUrl
+              activePlayer.player.position === "GOALKEEPER"
+                ? (activePlayer.player.club.goalkeeperJerseyUrl ??
+                  activePlayer.player.club.jerseyUrl)
+                : activePlayer.player.club.jerseyUrl
             }
-            className="object-contain"
-            alt={`${fplPlayer.player.name} Jersey`}
-            width={100}
-            height={100}
+            className="jersey-reveal object-contain opacity-70"
+            alt={`${activePlayer.player.name} Jersey`}
+            width={300}
+            height={300}
             quality={100}
           />
 
-          <p>{fplPlayer.player.displayName ?? fplPlayer.player.name}</p>
-          <p>
-            {fplPlayer.player.position.charAt(0) +
-              fplPlayer.player.position.slice(1).toLowerCase()}
-          </p>
+          <div className="absolute top-1/2 w-full">
+            <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
+              <p className="text-reveal text-5xl font-bold">
+                {activePlayer.player.displayName ?? activePlayer.player.name}
+              </p>
+              <p className="text-reveal text-lg">
+                {activePlayer.player.position.charAt(0) +
+                  activePlayer.player.position.slice(1).toLowerCase()}
+              </p>
+            </div>
+          </div>
         </div>
-      ))}
+      ) : (
+        <div className="flex items-center gap-x-14">
+          {benchPlayers.map((fplPlayer) => (
+            <div key={fplPlayer.id} className="relative flex flex-col gap-y-2">
+              <Image
+                src={
+                  fplPlayer.player.position === "GOALKEEPER"
+                    ? (fplPlayer.player.club.goalkeeperJerseyUrl ??
+                      fplPlayer.player.club.jerseyUrl)
+                    : fplPlayer.player.club.jerseyUrl
+                }
+                className="jersey-reveal object-contain opacity-70"
+                alt={`${fplPlayer.player.name} Jersey`}
+                width={300}
+                height={300}
+                quality={100}
+              />
+
+              <div className="absolute top-1/2">
+                <p className="text-reveal text-5xl font-bold">
+                  {fplPlayer.player.displayName ?? fplPlayer.player.name}
+                </p>
+                <p className="text-reveal text-lg">
+                  {fplPlayer.player.position.charAt(0) +
+                    fplPlayer.player.position.slice(1).toLowerCase()}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -325,53 +378,96 @@ const AwayPlayerReveal: React.FC<AwayPlayerReveal> = ({ fplPlayers }) => {
   ];
   const activePlayer = startingElevenPlayers[playerRevealCount - 1];
 
-  return activePlayer && playerRevealCount < 12 ? (
-    <div className="flex flex-col gap-y-2">
-      <Image
-        src={
-          activePlayer.player.position === "GOALKEEPER"
-            ? (activePlayer.player.club.goalkeeperJerseyUrl ??
-              activePlayer.player.club.jerseyUrl)
-            : activePlayer.player.club.jerseyUrl
-        }
-        className="object-contain"
-        alt={`${activePlayer.player.name} Jersey`}
-        width={80}
-        height={80}
-        quality={100}
-      />
+  const container = useRef<HTMLDivElement | null>(null);
+  const tl = useRef<gsap.core.Timeline | null>(null);
 
-      <p>{activePlayer.player.displayName ?? activePlayer.player.name}</p>
-      <p>
-        {activePlayer.player.position.charAt(0) +
-          activePlayer.player.position.slice(1).toLowerCase()}
-      </p>
-    </div>
-  ) : (
-    <div className="flex items-center gap-x-14">
-      {benchPlayers.map((fplPlayer) => (
-        <div key={fplPlayer.id} className="flex flex-col gap-y-2">
+  useGSAP(
+    () => {
+      tl.current = gsap
+        .timeline()
+        .from(`.jersey-reveal`, {
+          scale: 0.7,
+          duration: 0.75,
+          stagger: 0.1,
+        })
+        .from(
+          `.text-reveal`,
+          {
+            opacity: 0,
+            scale: 0.7,
+            duration: 0.75,
+            stagger: 0.1,
+          },
+          "-=0.7",
+        );
+    },
+    {
+      scope: container,
+      dependencies: [activePlayer],
+    },
+  );
+
+  return (
+    <div ref={container}>
+      {activePlayer && playerRevealCount < 12 ? (
+        <div className="relative flex w-full flex-col items-center gap-y-2">
           <Image
             src={
-              fplPlayer.player.position === "GOALKEEPER"
-                ? (fplPlayer.player.club.goalkeeperJerseyUrl ??
-                  fplPlayer.player.club.jerseyUrl)
-                : fplPlayer.player.club.jerseyUrl
+              activePlayer.player.position === "GOALKEEPER"
+                ? (activePlayer.player.club.goalkeeperJerseyUrl ??
+                  activePlayer.player.club.jerseyUrl)
+                : activePlayer.player.club.jerseyUrl
             }
-            className="object-contain"
-            alt={`${fplPlayer.player.name} Jersey`}
-            width={100}
-            height={100}
+            className="jersey-reveal object-contain opacity-70"
+            alt={`${activePlayer.player.name} Jersey`}
+            width={300}
+            height={300}
             quality={100}
           />
 
-          <p>{fplPlayer.player.displayName ?? fplPlayer.player.name}</p>
-          <p>
-            {fplPlayer.player.position.charAt(0) +
-              fplPlayer.player.position.slice(1).toLowerCase()}
-          </p>
+          <div className="absolute top-1/2 w-full">
+            <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
+              <p className="text-reveal text-5xl font-bold">
+                {activePlayer.player.displayName ?? activePlayer.player.name}
+              </p>
+              <p className="text-reveal text-lg">
+                {activePlayer.player.position.charAt(0) +
+                  activePlayer.player.position.slice(1).toLowerCase()}
+              </p>
+            </div>
+          </div>
         </div>
-      ))}
+      ) : (
+        <div className="flex items-center gap-x-14">
+          {benchPlayers.map((fplPlayer) => (
+            <div key={fplPlayer.id} className="relative flex flex-col gap-y-2">
+              <Image
+                src={
+                  fplPlayer.player.position === "GOALKEEPER"
+                    ? (fplPlayer.player.club.goalkeeperJerseyUrl ??
+                      fplPlayer.player.club.jerseyUrl)
+                    : fplPlayer.player.club.jerseyUrl
+                }
+                className="jersey-reveal object-contain opacity-70"
+                alt={`${fplPlayer.player.name} Jersey`}
+                width={300}
+                height={300}
+                quality={100}
+              />
+
+              <div className="absolute top-1/2">
+                <p className="text-reveal text-5xl font-bold">
+                  {fplPlayer.player.displayName ?? fplPlayer.player.name}
+                </p>
+                <p className="text-reveal text-lg">
+                  {fplPlayer.player.position.charAt(0) +
+                    fplPlayer.player.position.slice(1).toLowerCase()}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

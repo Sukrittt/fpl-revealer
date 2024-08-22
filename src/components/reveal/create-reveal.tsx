@@ -19,13 +19,14 @@ export const CreateReveal = () => {
     });
 
   return (
-    <div className="flex h-screen w-full items-center justify-center">
+    <div className="flex h-screen w-full items-center justify-center bg-[url('/images/background.png')]">
       <div className="flex min-w-[500px] flex-col gap-y-2">
         <Input
           type="email"
           disabled={isPending}
           placeholder="Challenger Email"
           value={email}
+          className="border-[#070f20] bg-transparent text-white ring-offset-[#070f20] focus-visible:ring-[#070f20]"
           onChange={(e) => setEmail(e.target.value)}
         />
 
@@ -33,7 +34,7 @@ export const CreateReveal = () => {
           disabled={isPending}
           onClick={() => createReveal({ challengerEmail: email })}
           className={cn(
-            "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-neutral-200 px-2 py-1 text-sm transition hover:bg-neutral-200/60",
+            "mt-2 flex cursor-pointer items-center justify-center gap-x-2 rounded-md bg-[#070f20] px-2 py-1.5 text-sm text-white transition hover:bg-[#070f20]/60",
             {
               "cursor-default opacity-60": isPending,
             },
