@@ -22,7 +22,7 @@ export const Navbar = async () => {
         <Image src="/images/logo.png" alt="logo" width={90} height={90} />
 
         <div className="flex items-center gap-x-8 text-[16.5px] font-bold tracking-wide">
-          <p>Team Reveal</p>
+          <Link href="/reveal">Team Reveal</Link>
           <Link href="/teams">Manage FPL</Link>
           {user?.role === "ADMIN" && <Link href="/manage">Manage Teams</Link>}
         </div>

@@ -162,9 +162,25 @@ model FplTeam {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    homeAppearances RevealMatch[] @relation("homeAppearances")
+    awayAppearances RevealMatch[] @relation("awayAppearances")
 }
 
 enum Status {
     DRAFT
     ACTIVE
+}
+
+model RevealMatch {
+    id String @id @default(cuid())
+
+    homeTeamId String
+    homeTeam   FplTeam @relation("homeAppearances", fields: [homeTeamId], references: [id])
+
+    awayTeamId String
+    awayTeam   FplTeam @relation("awayAppearances", fields: [awayTeamId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

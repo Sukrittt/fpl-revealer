@@ -1,5 +1,6 @@
 import { fplRouter } from "~/server/api/routers/fpl";
 import { clubRouter } from "~/server/api/routers/club";
+import { revealRouter } from "~/server/api/routers/reveal";
 import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 
 /**
@@ -10,6 +11,7 @@ import { createCallerFactory, createTRPCRouter } from "~/server/api/trpc";
 export const appRouter = createTRPCRouter({
   club: clubRouter,
   fpl: fplRouter,
+  reveal: revealRouter,
 });
 
 // export type definition of API
