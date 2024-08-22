@@ -77,7 +77,7 @@ export const CreateDraft = () => {
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create Teams</DialogTitle>
+          <DialogTitle>Create Team</DialogTitle>
         </DialogHeader>
 
         <div className="flex flex-col gap-y-2">

@@ -2,11 +2,11 @@ import Image from "next/image";
 import { notFound, redirect } from "next/navigation";
 
 import { db } from "~/server/db";
+import { EditClub } from "./edit-club";
 import { AddPlayer } from "./add-player";
+import { EditPlayer } from "./edit-player";
 import { getServerAuthSession } from "~/server/auth";
 import { getCategorizedPlayers } from "~/lib/utils";
-import { EditClub } from "./edit-club";
-import { EditPlayer } from "./edit-player";
 
 export const ClubServer = async ({ clubId }: { clubId: string }) => {
   const session = await getServerAuthSession();

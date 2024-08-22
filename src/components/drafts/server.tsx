@@ -1,11 +1,18 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ArrowUpRight } from "lucide-react";
 
 import { db } from "~/server/db";
 import { CreateDraft } from "./create-draft";
-import Link from "next/link";
+import { getServerAuthSession } from "~/server/auth";
 
 export const DraftsServer = async () => {
+  const session = await getServerAuthSession();
+
+  if (!session) redirect("/");
+
   const drafts = await db.fplTeam.findMany({
+    where: { userId: session.user.id },
     orderBy: {
       createdAt: "desc",
     },
