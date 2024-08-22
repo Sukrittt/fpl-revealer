@@ -42,7 +42,7 @@ export const DraftsServer = async () => {
         ) : (
           formattedDrafts.map((draft) => (
             <Link
-              href={`/teams/${draft.id}`}
+              href={`/teams/${draft.id}/transfers`}
               key={draft.id}
               className="group flex items-center justify-between border px-4 py-2"
             >

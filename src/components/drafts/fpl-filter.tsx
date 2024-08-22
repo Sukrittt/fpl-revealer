@@ -78,18 +78,26 @@ export const FplFilter = () => {
 
   const getMaxPriceOpts = (position: Position | null) => {
     let optCount: number;
+    let minPrice: number;
 
     if (position === "GOALKEEPER") {
       optCount = 5.5;
+      minPrice = 4.0;
     } else if (position === "MIDFIELDER") {
       optCount = 12.5;
+      minPrice = 4.5;
     } else if (position === "DEFENDER") {
       optCount = 7;
+      minPrice = 4.0;
+    } else if (position === "FORWARD") {
+      minPrice = 4.5;
+      optCount = 15;
     } else {
       optCount = 15;
+      minPrice = 4.0;
     }
 
-    const length = Math.floor((optCount - 0.5) * 2) + 1;
+    const length = Math.floor((optCount - minPrice) * 2) + 1;
 
     return Array.from({ length }, (_, i) => optCount - i * 0.5).map((i) => ({
       label: i.toFixed(1).toString(),
