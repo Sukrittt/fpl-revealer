@@ -249,7 +249,10 @@ const HomePlayerReveal: React.FC<HomePlayerReveal> = ({
           <div className="absolute top-1/2 w-full">
             <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
               <p className="text-reveal text-5xl font-extrabold">
-                {activePlayer.player.displayName ?? activePlayer.player.name}
+                {activePlayer.player.displayName &&
+                activePlayer.player.displayName.length > 0
+                  ? activePlayer.player.displayName
+                  : activePlayer.player.name}
               </p>
               <p className="text-reveal text-lg">
                 {activePlayer.player.position.charAt(0) +
@@ -285,7 +288,10 @@ const HomePlayerReveal: React.FC<HomePlayerReveal> = ({
               <div className="absolute top-1/2">
                 <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
                   <p className="text-reveal text-5xl font-bold">
-                    {fplPlayer.player.displayName ?? fplPlayer.player.name}
+                    {fplPlayer.player.displayName &&
+                    fplPlayer.player.displayName.length > 0
+                      ? fplPlayer.player.displayName
+                      : fplPlayer.player.name}
                   </p>
                   <div className="flex w-full flex-col items-center">
                     <p className="text-reveal text-lg">
@@ -438,7 +444,10 @@ const AwayPlayerReveal: React.FC<AwayPlayerReveal> = ({ fplPlayers }) => {
           <div className="absolute top-1/2 w-full">
             <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
               <p className="text-reveal text-5xl font-extrabold">
-                {activePlayer.player.displayName ?? activePlayer.player.name}
+                {activePlayer.player.displayName &&
+                activePlayer.player.displayName.length > 0
+                  ? activePlayer.player.displayName
+                  : activePlayer.player.name}
               </p>
               <div className="flex w-full flex-col items-center">
                 <p className="text-reveal text-lg">
@@ -471,7 +480,10 @@ const AwayPlayerReveal: React.FC<AwayPlayerReveal> = ({ fplPlayers }) => {
               <div className="absolute top-1/2">
                 <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
                   <p className="text-reveal text-5xl font-bold">
-                    {fplPlayer.player.displayName ?? fplPlayer.player.name}
+                    {fplPlayer.player.displayName &&
+                    fplPlayer.player.displayName.length > 0
+                      ? fplPlayer.player.displayName
+                      : fplPlayer.player.name}
                   </p>
                   <div className="flex w-full flex-col items-center">
                     <p className="text-reveal text-lg">

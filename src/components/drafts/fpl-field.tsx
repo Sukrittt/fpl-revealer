@@ -81,17 +81,19 @@ const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
   return (
     <FplPlayerInfo fplPlayer={fplPlayer}>
       <div className="relative flex h-36 w-24 cursor-pointer flex-col overflow-hidden rounded-md border border-[#3ebf84] bg-[#0ea15e] ring-offset-background transition hover:ring-1 hover:ring-white hover:ring-offset-1 focus-visible:outline-none">
-        <RemovePlayerFromFpl
-          fplPlayerId={fplPlayer.id}
-          fplTeamId={fplPlayer.fplTeamId}
-          playerName={fplPlayer.player.name}
-        >
-          <div className="absolute left-1 top-1">
-            <div className="flex cursor-pointer items-center justify-center rounded-full bg-foreground p-0.5">
-              <X className="m-auto h-3 w-3 text-white" />
+        <div onClick={(e) => e.stopPropagation()}>
+          <RemovePlayerFromFpl
+            fplPlayerId={fplPlayer.id}
+            fplTeamId={fplPlayer.fplTeamId}
+            playerName={fplPlayer.player.name}
+          >
+            <div className="absolute left-1 top-1">
+              <div className="flex cursor-pointer items-center justify-center rounded-full bg-foreground p-0.5">
+                <X className="m-auto h-3 w-3 text-white" />
+              </div>
             </div>
-          </div>
-        </RemovePlayerFromFpl>
+          </RemovePlayerFromFpl>
+        </div>
 
         <p className="text-center text-sm text-white">
           £{fplPlayer.player.price.toFixed(1)}m
@@ -115,8 +117,10 @@ const PlayerCard = ({ fplPlayer }: { fplPlayer: ExtendedFplPlayer }) => {
 
         <div className="bg-white px-4 py-1">
           <p className="text-center text-sm">
-            {fplPlayer.player.displayName?.split(" ")[0] ??
-              fplPlayer.player.name.split(" ")[0]}
+            {fplPlayer.player.displayName &&
+            fplPlayer.player.displayName.length > 0
+              ? fplPlayer.player.displayName?.split(" ")[0]
+              : fplPlayer.player.name.split(" ")[0]}
           </p>
         </div>
 

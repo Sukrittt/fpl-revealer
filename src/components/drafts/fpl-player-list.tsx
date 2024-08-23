@@ -99,7 +99,10 @@ export const FplPlayerList: React.FC<FplPlayerListProps> = ({ fplTeam }) => {
 
                               <div className="flex flex-col gap-y-0.5">
                                 <p className="text-[15px] font-semibold">
-                                  {player.displayName ?? player.name}
+                                  {player.displayName &&
+                                  player.displayName.length > 0
+                                    ? player.displayName
+                                    : player.name}
                                 </p>
 
                                 <div className="flex items-center gap-x-1 text-[13px] font-extralight">

@@ -78,7 +78,11 @@ export const ClubServer = async ({ clubId }: { clubId: string }) => {
                       width={30}
                       height={30}
                     />
-                    <p>{player.displayName ?? player.name}</p>
+                    <p>
+                      {player.displayName && player.displayName.length > 0
+                        ? player.displayName
+                        : player.name}
+                    </p>
                   </div>
 
                   <span className="font-light">{player.price.toFixed(1)}m</span>
