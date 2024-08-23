@@ -238,12 +238,7 @@ const HomePlayerReveal: React.FC<HomePlayerReveal> = ({
       {activePlayer && playerRevealCount < 12 ? (
         <div className="relative flex w-full flex-col items-center gap-y-2">
           <Image
-            src={
-              activePlayer.player.position === "GOALKEEPER"
-                ? (activePlayer.player.club.goalkeeperJerseyUrl ??
-                  activePlayer.player.club.jerseyUrl)
-                : activePlayer.player.club.jerseyUrl
-            }
+            src={activePlayer.player.club.jerseyUrl}
             className="jersey-reveal object-contain opacity-70"
             alt={`${activePlayer.player.name} Jersey`}
             width={300}
@@ -260,20 +255,26 @@ const HomePlayerReveal: React.FC<HomePlayerReveal> = ({
                 {activePlayer.player.position.charAt(0) +
                   activePlayer.player.position.slice(1).toLowerCase()}
               </p>
+              <div className="flex w-full flex-col items-center">
+                {activePlayer.isCaptain && (
+                  <span className="text-reveal text-[10px]">Captain</span>
+                )}
+                {activePlayer.isViceCaptain && (
+                  <span className="text-reveal text-[10px]">Vice Captain</span>
+                )}
+              </div>
             </div>
           </div>
         </div>
       ) : (
         <div className="flex items-center gap-x-14">
           {benchPlayers.map((fplPlayer) => (
-            <div key={fplPlayer.id} className="relative flex flex-col gap-y-2">
+            <div
+              key={fplPlayer.id}
+              className="relative flex flex-col gap-y-2 px-8"
+            >
               <Image
-                src={
-                  fplPlayer.player.position === "GOALKEEPER"
-                    ? (fplPlayer.player.club.goalkeeperJerseyUrl ??
-                      fplPlayer.player.club.jerseyUrl)
-                    : fplPlayer.player.club.jerseyUrl
-                }
+                src={fplPlayer.player.club.jerseyUrl}
                 className="jersey-reveal object-contain opacity-70"
                 alt={`${fplPlayer.player.name} Jersey`}
                 width={300}
@@ -282,13 +283,25 @@ const HomePlayerReveal: React.FC<HomePlayerReveal> = ({
               />
 
               <div className="absolute top-1/2">
-                <p className="text-reveal text-5xl font-bold">
-                  {fplPlayer.player.displayName ?? fplPlayer.player.name}
-                </p>
-                <p className="text-reveal text-lg">
-                  {fplPlayer.player.position.charAt(0) +
-                    fplPlayer.player.position.slice(1).toLowerCase()}
-                </p>
+                <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
+                  <p className="text-reveal text-5xl font-bold">
+                    {fplPlayer.player.displayName ?? fplPlayer.player.name}
+                  </p>
+                  <div className="flex w-full flex-col items-center">
+                    <p className="text-reveal text-lg">
+                      {fplPlayer.player.position.charAt(0) +
+                        fplPlayer.player.position.slice(1).toLowerCase()}{" "}
+                    </p>
+                    {fplPlayer.isCaptain && (
+                      <span className="text-reveal text-[10px]">Captain</span>
+                    )}
+                    {fplPlayer.isViceCaptain && (
+                      <span className="text-reveal text-[10px]">
+                        Vice Captain
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -414,12 +427,7 @@ const AwayPlayerReveal: React.FC<AwayPlayerReveal> = ({ fplPlayers }) => {
       {activePlayer && playerRevealCount < 12 ? (
         <div className="relative flex w-full flex-col items-center gap-y-2">
           <Image
-            src={
-              activePlayer.player.position === "GOALKEEPER"
-                ? (activePlayer.player.club.goalkeeperJerseyUrl ??
-                  activePlayer.player.club.jerseyUrl)
-                : activePlayer.player.club.jerseyUrl
-            }
+            src={activePlayer.player.club.jerseyUrl}
             className="jersey-reveal object-contain opacity-70"
             alt={`${activePlayer.player.name} Jersey`}
             width={300}
@@ -432,24 +440,27 @@ const AwayPlayerReveal: React.FC<AwayPlayerReveal> = ({ fplPlayers }) => {
               <p className="text-reveal text-5xl font-extrabold">
                 {activePlayer.player.displayName ?? activePlayer.player.name}
               </p>
-              <p className="text-reveal text-lg">
-                {activePlayer.player.position.charAt(0) +
-                  activePlayer.player.position.slice(1).toLowerCase()}
-              </p>
+              <div className="flex w-full flex-col items-center">
+                <p className="text-reveal text-lg">
+                  {activePlayer.player.position.charAt(0) +
+                    activePlayer.player.position.slice(1).toLowerCase()}
+                </p>
+                {activePlayer.isCaptain && (
+                  <span className="text-reveal text-[10px]">Captain</span>
+                )}
+                {activePlayer.isViceCaptain && (
+                  <span className="text-reveal text-[10px]">Vice Captain</span>
+                )}
+              </div>
             </div>
           </div>
         </div>
       ) : (
-        <div className="flex items-center gap-x-14">
+        <div className="flex items-center gap-x-14 px-8">
           {benchPlayers.map((fplPlayer) => (
             <div key={fplPlayer.id} className="relative flex flex-col gap-y-2">
               <Image
-                src={
-                  fplPlayer.player.position === "GOALKEEPER"
-                    ? (fplPlayer.player.club.goalkeeperJerseyUrl ??
-                      fplPlayer.player.club.jerseyUrl)
-                    : fplPlayer.player.club.jerseyUrl
-                }
+                src={fplPlayer.player.club.jerseyUrl}
                 className="jersey-reveal object-contain opacity-70"
                 alt={`${fplPlayer.player.name} Jersey`}
                 width={300}
@@ -458,13 +469,25 @@ const AwayPlayerReveal: React.FC<AwayPlayerReveal> = ({ fplPlayers }) => {
               />
 
               <div className="absolute top-1/2">
-                <p className="text-reveal text-5xl font-bold">
-                  {fplPlayer.player.displayName ?? fplPlayer.player.name}
-                </p>
-                <p className="text-reveal text-lg">
-                  {fplPlayer.player.position.charAt(0) +
-                    fplPlayer.player.position.slice(1).toLowerCase()}
-                </p>
+                <div className="flex w-full flex-col items-center gap-y-0.5 uppercase">
+                  <p className="text-reveal text-5xl font-bold">
+                    {fplPlayer.player.displayName ?? fplPlayer.player.name}
+                  </p>
+                  <div className="flex w-full flex-col items-center">
+                    <p className="text-reveal text-lg">
+                      {fplPlayer.player.position.charAt(0) +
+                        fplPlayer.player.position.slice(1).toLowerCase()}{" "}
+                    </p>
+                    {fplPlayer.isCaptain && (
+                      <span className="text-reveal text-[10px]">Captain</span>
+                    )}
+                    {fplPlayer.isViceCaptain && (
+                      <span className="text-reveal text-[10px]">
+                        Vice Captain
+                      </span>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           ))}
